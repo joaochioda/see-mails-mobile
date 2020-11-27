@@ -1,9 +1,9 @@
 import React, { Component, Fragment, useEffect, useState } from "react";
-import { Text, View, StyleSheet, Button, Image, StatusBar, Animated, ScrollView } from "react-native";
+import { Text, View, StyleSheet, Button, Image, StatusBar, Animated, ScrollView, FlatList, SafeAreaView } from "react-native";
 import MailList from "../components/mailList";
 import firebase from "firebase";
 import Swipeable from "react-native-gesture-handler/Swipeable";
-import { ExpandableListView } from 'react-native-expandable-listview';
+import ItemBox from '../components/ItemBox';
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDLbQeqLKddeUfRf_5VvaoJft1lRyxG998",
@@ -133,34 +133,16 @@ const ProfileScreen = (props) => {
 					onPress={() => props.navigation.navigate("Login")}
 				/>
 			</View>
-			<View style={styles.listMail}>
-				<ScrollView>
-					{CONTENT.map((c, idx) =>
-						<View>
 
-							<Swipeable
-								renderLeftActions={LeftActions}
-								renderRightActions={RightActions}
-								onSwipeableLeftOpen={() => console.log('oi')}
-								onSwipeableRightOpen={() => deleteMail(CONTENT[idx])}
-							>
-
-								<ExpandableListView
-									data={CONTENT[idx]} // required
-									onInnerItemClick={handleInnerItemClick}
-									onItemClick={handleItemClick}
-									customChevron={{}}
-									itemContainerStyle={{ backgroundColor: "#3d405b" }}
-									itemLabelStyle={{ color: 'white' }}
-									innerItemLabelStyle={{ color: '#e07a5f', backgroundColor: "#3d405b" }}
-								/>
-							</Swipeable>
-						</View>
-					)}
-				</ScrollView>
-
-				<StatusBar backgroundColor="aqua" barStyle="light-content" />
-			</View>
+		<SafeAreaView style={styles.container}>
+      <FlatList
+        data={mails}
+        renderItem={({item, index}) => {
+          return <ItemBox data={item} />;
+        }}
+       
+      />
+    </SafeAreaView>
 		</View>
 	);
 };
@@ -183,6 +165,7 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-between",
+		marginBottom: 50,
 	},
 	textHeader: {
 		fontSize: 25,
