@@ -1,8 +1,6 @@
-import React, { Component, Fragment, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Button, Image, StatusBar, Animated, ScrollView, FlatList, SafeAreaView } from "react-native";
-import MailList from "../components/mailList";
 import firebase from "firebase";
-import Swipeable from "react-native-gesture-handler/Swipeable";
 import ItemBox from '../components/ItemBox';
 
 const firebaseConfig = {
@@ -34,46 +32,18 @@ const ProfileScreen = (props) => {
 				c.forEach(t => {
 					array.push({ key: t.key, val: t.val() });
 				});
-				mountContent(array);
+				setMails(array);
+
 			});
 	}, []);
 
-	const mountContent = (arr) => {
-		let items = [];
-		arr.forEach((array, idx) => {
-			items[idx] = [{
-				id: array.key, categoryName: array.val.subject,
 
-				subCategory: [
-
-					{ id: idx + 1, name: array.val.message },
-					{
-						customInnerItem: (
-							<View style={{ flexDirection: 'column', backgroundColor: "#3d405b" }}>
-								<Text style={{ color: '#e07a5f', margin: 10, fontWeight: "bold" }}>{array.val.name}</Text>
-								<View style={{ flexDirection: 'column', marginLeft: 10, backgroundColor: "#3d405b" }}>
-
-									<Text style={{ color: '#e07a5f', fontWeight: "bold" }} >{array.val.email}</Text>
-								</View>
-							</View>
-						),
-						id: '1',
-						name: '',
-					}
-				]
-			}
-			];
-		}
-		);
-		setCONTENT(items);
-		setMails(arr);
-
-	}
 
 	firebase.database().ref('messages').on('child_added', (data) => {
 		if (data !== null && data !== undefined && !mails.find(m => m.key === data.key)) {
 			const array = [...mails, { key: data.key, val: data.val() }];
-			mountContent(array);
+			setMails(array);
+
 		};
 
 	});
@@ -81,7 +51,8 @@ const ProfileScreen = (props) => {
 	firebase.database().ref('messages').on("child_removed", function (snapshot) {
 		if (snapshot !== null && snapshot !== undefined) {
 			const array = mails.filter(c => c.key !== snapshot.key);
-			mountContent(array);
+			setMails(array);
+
 		}
 	});
 
@@ -107,11 +78,7 @@ const ProfileScreen = (props) => {
 		);
 	};
 
-	function handleItemClick({ index }) {
-	};
 
-	function handleInnerItemClick({ innerIndex, item, itemIndex }) {
-	};
 
 	function deleteMail(key) {
 		let userRef = firebase.database().ref("messages/" + key[0].id);
@@ -134,15 +101,21 @@ const ProfileScreen = (props) => {
 				/>
 			</View>
 
-		<SafeAreaView style={styles.container}>
-      <FlatList
+			<SafeAreaView style={styles.container}>
+				{/* <FlatList
         data={mails}
         renderItem={({item, index}) => {
           return <ItemBox data={item} />;
         }}
        
-      />
-    </SafeAreaView>
+      /> */}
+				{mails.map(m => {
+
+					return (
+						<ItemBox data={m} />
+					)
+				})}
+			</SafeAreaView>
 		</View>
 	);
 };
