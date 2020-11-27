@@ -1,8 +1,9 @@
-import React, { Component, useEffect, useState } from "react";
-import { Text, View, StyleSheet, Button, Image, StatusBar, Animated } from "react-native";
+import React, { Component, Fragment, useEffect, useState } from "react";
+import { Text, View, StyleSheet, Button, Image, StatusBar, Animated, ScrollView } from "react-native";
 import MailList from "../components/mailList";
 import firebase from "firebase";
 import Swipeable from "react-native-gesture-handler/Swipeable";
+import { ExpandableListView } from 'react-native-expandable-listview';
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDLbQeqLKddeUfRf_5VvaoJft1lRyxG998",
@@ -17,9 +18,11 @@ const firebaseConfig = {
 
 const ProfileScreen = (props) => {
 	const [mails, setMails] = useState([]);
+	const [CONTENT, setCONTENT] = useState([[]]);
 	if (!firebase.apps.length) {
 		firebase.initializeApp(firebaseConfig);
 	}
+
 
 	useEffect(() => {
 		const array = [];
@@ -28,27 +31,70 @@ const ProfileScreen = (props) => {
 			.ref("messages")
 			.once("value")
 			.then((c) => {
-				c.forEach((t) => {
-					array.push(t.val());
+				c.forEach(t => {
+					array.push({ key: t.key, val: t.val() });
 				});
-				setMails(array);
+				mountContent(array);
 			});
 	}, []);
 
-	//  firebase.database().ref('messages').limitToLast(1).on('child_added', (data) => {
-	//   console.log('bbbbbbbbbbbb',data.val());
-	//  });
+	const mountContent = (arr) => {
+		let items = [];
+		arr.forEach((array, idx) => {
+			items[idx] = [{
+				id: array.key, categoryName: array.val.subject,
+
+				subCategory: [
+
+					{ id: idx + 1, name: array.val.message },
+					{
+						customInnerItem: (
+							<View style={{ flexDirection: 'column', backgroundColor: "#3d405b" }}>
+								<Text style={{ color: '#e07a5f', margin: 10, fontWeight: "bold" }}>{array.val.name}</Text>
+								<View style={{ flexDirection: 'column', marginLeft: 10, backgroundColor: "#3d405b" }}>
+
+									<Text style={{ color: '#e07a5f', fontWeight: "bold" }} >{array.val.email}</Text>
+								</View>
+							</View>
+						),
+						id: '1',
+						name: '',
+					}
+				]
+			}
+			];
+		}
+		);
+		setCONTENT(items);
+		setMails(arr);
+
+	}
+
+	firebase.database().ref('messages').on('child_added', (data) => {
+		if (data !== null && data !== undefined && !mails.find(m => m.key === data.key)) {
+			const array = [...mails, { key: data.key, val: data.val() }];
+			mountContent(array);
+		};
+
+	});
+
+	firebase.database().ref('messages').on("child_removed", function (snapshot) {
+		if (snapshot !== null && snapshot !== undefined) {
+			const array = mails.filter(c => c.key !== snapshot.key);
+			mountContent(array);
+		}
+	});
 
 	const LeftActions = (progress, dragX) => {
 		const scale = dragX.interpolate({
 			inputRange: [0, 100],
-			outputRange: [0,1],
+			outputRange: [0, 1],
 			extrapolate: 'clamp'
 		})
-		
+
 		return (
 			<View style={styles.leftAction}>
-				<Animated.Text style={[styles.actionText, { transform: [{scale}]}]}>Ver email</Animated.Text>
+				<Animated.Text style={[styles.actionText, { transform: [{ scale }] }]}>Ver email</Animated.Text>
 			</View>
 		);
 	};
@@ -60,6 +106,17 @@ const ProfileScreen = (props) => {
 			</View>
 		);
 	};
+
+	function handleItemClick({ index }) {
+	};
+
+	function handleInnerItemClick({ innerIndex, item, itemIndex }) {
+	};
+
+	function deleteMail(key) {
+		let userRef = firebase.database().ref("messages/" + key[0].id);
+		userRef.remove();
+	}
 
 	return (
 		<View style={styles.container}>
@@ -77,19 +134,30 @@ const ProfileScreen = (props) => {
 				/>
 			</View>
 			<View style={styles.listMail}>
-				{mails.map((c, index) => {
-					return (
-            <View>
-						<Swipeable
-							renderLeftActions={LeftActions}
-							renderRightActions={RightActions}
-							onSwipeableLeftOpen={()=> console.log('oi')}
-						>
-							<MailList mail={c} key={index} />
-						</Swipeable>
-            </View>
-					);
-				})}
+				<ScrollView>
+					{CONTENT.map((c, idx) =>
+						<View>
+
+							<Swipeable
+								renderLeftActions={LeftActions}
+								renderRightActions={RightActions}
+								onSwipeableLeftOpen={() => console.log('oi')}
+								onSwipeableRightOpen={() => deleteMail(CONTENT[idx])}
+							>
+
+								<ExpandableListView
+									data={CONTENT[idx]} // required
+									onInnerItemClick={handleInnerItemClick}
+									onItemClick={handleItemClick}
+									customChevron={{}}
+									itemContainerStyle={{ backgroundColor: "#3d405b" }}
+									itemLabelStyle={{ color: 'white' }}
+									innerItemLabelStyle={{ color: '#e07a5f', backgroundColor: "#3d405b" }}
+								/>
+							</Swipeable>
+						</View>
+					)}
+				</ScrollView>
 
 				<StatusBar backgroundColor="aqua" barStyle="light-content" />
 			</View>
@@ -121,6 +189,7 @@ const styles = StyleSheet.create({
 		color: "#e07a5f",
 	},
 	listMail: {
+		flex: 1,
 		paddingTop: 75,
 	},
 	leftAction: {
