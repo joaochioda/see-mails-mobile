@@ -52,36 +52,12 @@ const ProfileScreen = (props) => {
 		if (snapshot !== null && snapshot !== undefined) {
 			const array = mails.filter(c => c.key !== snapshot.key);
 			setMails(array);
-
 		}
 	});
 
-	const LeftActions = (progress, dragX) => {
-		const scale = dragX.interpolate({
-			inputRange: [0, 100],
-			outputRange: [0, 1],
-			extrapolate: 'clamp'
-		})
-
-		return (
-			<View style={styles.leftAction}>
-				<Animated.Text style={[styles.actionText, { transform: [{ scale }] }]}>Ver email</Animated.Text>
-			</View>
-		);
-	};
-
-	const RightActions = () => {
-		return (
-			<View style={styles.rightAction}>
-				<Text style={styles.actionText}>Deletar email</Text>
-			</View>
-		);
-	};
-
-
 
 	function deleteMail(key) {
-		let userRef = firebase.database().ref("messages/" + key[0].id);
+		let userRef = firebase.database().ref("messages/" + key);
 		userRef.remove();
 	}
 
@@ -93,7 +69,7 @@ const ProfileScreen = (props) => {
 					source={{ uri: props.navigation.getParam("photo") }}
 				/>
 				<Text style={styles.textHeader}>
-					{props.navigation.getParam("username")}
+					{`Hi, ${props.navigation.getParam("username")}`}
 				</Text>
 				<Button
 					title="Sign out"
@@ -102,20 +78,14 @@ const ProfileScreen = (props) => {
 			</View>
 
 			<SafeAreaView style={styles.container}>
-				{/* <FlatList
-        data={mails}
-        renderItem={({item, index}) => {
-          return <ItemBox data={item} />;
-        }}
-       
-      /> */}
 				{mails.map(m => {
 
 					return (
-						<ItemBox data={m} />
+						<ItemBox data={m} handleDelete={(key) => deleteMail(key)}/>
 					)
 				})}
 			</SafeAreaView>
+			<StatusBar backgroundColor="aqua" barStyle="light-content" />
 		</View>
 	);
 };

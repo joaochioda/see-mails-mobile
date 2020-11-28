@@ -1,0 +1,5 @@
+Colocar status nos itens {read: false}
+quando arrastar pra direita put read:true
+
+adicionar tab navigator pra ver os mail lidos
+(https://oieduardorabelo.medium.com/react-native-navega%C3%A7%C3%B5es-complexas-com-react-navigation-583a8f5a4a7)

@@ -14,39 +14,34 @@ import { ExpandableListView } from 'react-native-expandable-listview';
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const ItemBox = (props) => {
-  console.log(props.data);
 
   const convertToExpandable = (item) => {
     const itemEx = [{
-      			id: item.key, categoryName: item.val.subject,
-      
-      			subCategory: [
-      
-              { id: item.key, name:item.val.message },
-              {
-                					customInnerItem: (
-                						<View style={{ flexDirection: 'column', backgroundColor: "#3d405b" }}>
-                							<Text style={{ color: '#e07a5f', margin: 10, fontWeight: "bold" }}>{item.val.name}</Text>
-                							<View style={{ flexDirection: 'column', marginLeft: 10, backgroundColor: "#3d405b" }}>
-                
-                								<Text style={{ color: '#e07a5f', fontWeight: "bold" }} >{item.val.email}</Text>
-                							</View>
-                						</View>
-                					),
-                					id: '1',
-                					name: '',
-                				}
-      			]
-      		}
-          ];
-    console.log(itemEx);
+      id: item.key, categoryName: item.val.subject,
 
-    if (itemEx !== null ) {
-      console.log('retorna o item poxa')
+      subCategory: [
+
+        { id: item.key, name: item.val.message },
+        {
+          customInnerItem: (
+            <View style={styles.mainView}>
+              <View style={styles.view30Left}>
+                <Text style={styles.textBoldMargin10}>{item.val.name}</Text>
+                <Text style={styles.textBold} >{item.val.email}</Text>
+              </View>
+            </View>
+          ),
+          id: '1',
+          name: '',
+        }
+      ]
+    }
+    ];
+
+    if (itemEx !== null) {
       return itemEx;
 
     } else {
-      console.log('retornou nada');
       return [];
     }
   }
@@ -57,12 +52,10 @@ const ItemBox = (props) => {
       extrapolate: 'clamp',
     });
 
-  
-
     return (
-      <TouchableOpacity onPress={props.handleDelete} activeOpacity={0.6}>
+      <TouchableOpacity onPress={() => props.handleDelete(props.data.key)} activeOpacity={0.6}>
         <View style={styles.deleteBox}>
-          <Animated.Text style={{transform: [{scale: scale}]}}>
+          <Animated.Text style={{ transform: [{ scale: scale }], color: 'white' }}>
             Delete
           </Animated.Text>
         </View>
@@ -77,20 +70,23 @@ const ItemBox = (props) => {
   };
 
   return (
+    <View style={{margin: 10}}>
+
     <Swipeable renderLeftActions={leftSwipe}>
-      		<ExpandableListView
-									data={convertToExpandable(props.data)} // required
-									onInnerItemClick={handleInnerItemClick}
-									onItemClick={handleItemClick}
-									customChevron={{}}
-									itemContainerStyle={{ backgroundColor: "#3d405b" }}
-									itemLabelStyle={{ color: 'white' }}
-									innerItemLabelStyle={{ color: '#e07a5f', backgroundColor: "#3d405b" }}
-								/>
-      {/* <View style={styles.container}>
-        <Text style={styles.text}>My name is {props.data.val.name}.</Text>
-      </View> */}
+
+      <ExpandableListView
+        data={convertToExpandable(props.data)} // required
+        onInnerItemClick={handleInnerItemClick}
+        onItemClick={handleItemClick}
+        customChevron={{}}
+        itemContainerStyle={{ backgroundColor: "#3d405b", height: 40 }}
+        itemLabelStyle={{ color: 'white' }}
+        innerItemLabelStyle={{ color: '#e07a5f', backgroundColor: "#3d405b" }}
+      />
+
     </Swipeable>
+    </View>
+
   );
 };
 
@@ -109,40 +105,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: 100,
+    height: 40,
   },
   text: {
-		fontSize: 14,
-		color: "#e07a5f",
-	},
+    fontSize: 14,
+    color: "#e07a5f",
+  },
+  mainView: {
+    flexDirection: 'column', backgroundColor: "#3d405b"
+  },
+  view30Left: {
+    flexDirection: 'column', marginLeft: 30, backgroundColor: "#3d405b", margin: 5
+  },
+  view40Left: {
+    flexDirection: 'column', marginLeft: 40, backgroundColor: "#3d405b"
+  },
+  textBoldMargin10: {
+     color: '#e07a5f', fontWeight: "bold" , margin: 5
+  },
+  textBold: {
+    color: '#e07a5f', fontWeight: "bold", margin: 5
+  }
 });
-
-//// const mountContent = (arr) => {
-// 	let items = [];
-// 	arr.forEach((array, idx) => {
-// 		items[idx] = [{
-// 			id: array.key, categoryName: array.val.subject,
-
-// 			subCategory: [
-
-// 				{ id: idx + 1, name: array.val.message },
-// 				{
-// 					customInnerItem: (
-// 						<View style={{ flexDirection: 'column', backgroundColor: "#3d405b" }}>
-// 							<Text style={{ color: '#e07a5f', margin: 10, fontWeight: "bold" }}>{array.val.name}</Text>
-// 							<View style={{ flexDirection: 'column', marginLeft: 10, backgroundColor: "#3d405b" }}>
-
-// 								<Text style={{ color: '#e07a5f', fontWeight: "bold" }} >{array.val.email}</Text>
-// 							</View>
-// 						</View>
-// 					),
-// 					id: '1',
-// 					name: '',
-// 				}
-// 			]
-// 		}
-// 		];
-// 	}
-// 	);
-// 	setCONTENT(items);
-
-// }
