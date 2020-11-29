@@ -66,14 +66,14 @@ const ProfileScreen = (props) => {
 			<View style={styles.header}>
 				<Image
 					style={styles.tinyLogo}
-					source={{ uri: props.navigation.getParam("photo") }}
+					source={{ uri: props.photo }}
 				/>
 				<Text style={styles.textHeader}>
-					{`Hi, ${props.navigation.getParam("username")}`}
+					{`Hi, ${props.userName}`}
 				</Text>
 				<Button
 					title="Sign out"
-					onPress={() => props.navigation.navigate("Login")}
+					onPress={() => props.login()}
 				/>
 			</View>
 
@@ -81,7 +81,7 @@ const ProfileScreen = (props) => {
 				{mails.map(m => {
 
 					return (
-						<ItemBox data={m} handleDelete={(key) => deleteMail(key)}/>
+						<ItemBox key={m.key} data={m} handleDelete={(key) => deleteMail(key)}/>
 					)
 				})}
 			</SafeAreaView>
@@ -102,7 +102,6 @@ const styles = StyleSheet.create({
 		width: 80,
 		height: 80,
 		borderRadius: 50,
-		fontSize: 20,
 	},
 	header: {
 		flexDirection: "row",

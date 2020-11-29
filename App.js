@@ -1,14 +1,12 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import LoginScreen from './screens/LoginScreen';
-import ProfileScreen from './screens/ProfileScreen';
+import MainScreenWithTabs from './screens/MainScreenWithTabs';
 
 import {  createAppContainer, createSwitchNavigator } from 'react-navigation';
 
 const MainNavigator = createSwitchNavigator({
   Login: { screen: LoginScreen },
-  Profile: { screen: ProfileScreen },
+  MainScreenWithTabs: { screen: MainScreenWithTabs },
 });
 
 

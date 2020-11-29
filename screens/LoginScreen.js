@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import React from "react";
+import { View, StyleSheet, Button } from "react-native";
 
 import * as Google from "expo-google-app-auth";
 
@@ -27,9 +27,8 @@ const LoginScreen = (props) => {
 			};
 
 			if (result.type === "success") {
-				console.log(result.user.photoUrl);
 				if (result.user.email === "joaobenetasso@gmail.com") {
-					props.navigation.navigate("Profile", {
+					props.navigation.navigate("MainScreenWithTabs", {
 						username: result.user.givenName,
 						photo: result.user.photoUrl,
 					}); //after Google login redirect to Profile
