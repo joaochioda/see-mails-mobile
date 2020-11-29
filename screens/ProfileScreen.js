@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Text, View, StyleSheet, Button, Image, StatusBar, Animated, ScrollView, FlatList, SafeAreaView } from "react-native";
 import firebase from "firebase";
 import ItemBox from '../components/ItemBox';
+import Header from '../components/Header';
 
 const firebaseConfig = {
 	apiKey: "AIzaSyDLbQeqLKddeUfRf_5VvaoJft1lRyxG998",
@@ -63,25 +64,13 @@ const ProfileScreen = (props) => {
 
 	return (
 		<View style={styles.container}>
-			<View style={styles.header}>
-				<Image
-					style={styles.tinyLogo}
-					source={{ uri: props.photo }}
-				/>
-				<Text style={styles.textHeader}>
-					{`Hi, ${props.userName}`}
-				</Text>
-				<Button
-					title="Sign out"
-					onPress={() => props.login()}
-				/>
-			</View>
 
+			<Header photo={props.photo} login={props.login} userName={props.userName}/>
 			<SafeAreaView style={styles.container}>
 				{mails.map(m => {
 
 					return (
-						<ItemBox key={m.key} data={m} handleDelete={(key) => deleteMail(key)}/>
+						<ItemBox key={m.key} data={m} handleDelete={(key) => deleteMail(key)} />
 					)
 				})}
 			</SafeAreaView>
@@ -98,21 +87,7 @@ const styles = StyleSheet.create({
 		paddingTop: 60,
 		paddingLeft: 10,
 	},
-	tinyLogo: {
-		width: 80,
-		height: 80,
-		borderRadius: 50,
-	},
-	header: {
-		flexDirection: "row",
-		alignItems: "center",
-		justifyContent: "space-between",
-		marginBottom: 50,
-	},
-	textHeader: {
-		fontSize: 25,
-		color: "#e07a5f",
-	},
+
 	listMail: {
 		flex: 1,
 		paddingTop: 75,

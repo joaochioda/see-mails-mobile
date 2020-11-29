@@ -3,7 +3,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProfileScreen from './ProfileScreen';
 import LoginScreen from './LoginScreen';
-
+import ReadedMail from './ReadedMail';
 const Tab = createMaterialBottomTabNavigator();
 
 function MyTabs(props) {
@@ -16,7 +16,7 @@ function MyTabs(props) {
     >
       <Tab.Screen
         name="Unread"
-        children={() => <ProfileScreen userName={props.userName} photo={props.photo} login={props.login}/>}
+        children={() => <ProfileScreen userName={props.userName} photo={props.photo} login={props.login} />}
         options={{
           tabBarLabel: 'Unread',
           tabBarIcon: ({ color }) => (
@@ -24,9 +24,9 @@ function MyTabs(props) {
           ),
         }}
       />
-        <Tab.Screen
+      <Tab.Screen
         name="Readed"
-        children={() => <LoginScreen userName={props.userName} photo={props.photo} login={props.login}/>}
+        children={() => <ReadedMail userName={props.userName} photo={props.photo} login={props.login} />}
         options={{
           tabBarLabel: 'Readed',
           tabBarIcon: ({ color }) => (
@@ -37,5 +37,7 @@ function MyTabs(props) {
     </Tab.Navigator>
   );
 }
+
+
 
 export default MyTabs;
