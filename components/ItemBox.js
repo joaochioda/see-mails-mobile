@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import {
   View,
   Text,
@@ -63,6 +63,26 @@ const ItemBox = (props) => {
     );
   };
 
+  const rightSwipe = (progress, dragX) => {
+    if (props.page !== 'unread') {
+      return <Fragment />
+    }
+    const scale = dragX.interpolate({
+      inputRange: [0, 100],
+      outputRange: [0.5, 0],
+    });
+
+    return (
+      <TouchableOpacity  onPress={() => props.handleRead(props.data.key)} activeOpacity={0.6}>
+        <View style={styles.readBox}>
+          <Animated.Text style={{ transform: [{ scale: scale }], color: 'white' }}>
+            Read
+          </Animated.Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   function handleItemClick({ index }) {
   };
 
@@ -72,7 +92,7 @@ const ItemBox = (props) => {
   return (
     <View style={{margin: 10}}>
 
-    <Swipeable renderLeftActions={leftSwipe}>
+    <Swipeable renderLeftActions={leftSwipe} renderRightActions={rightSwipe}>
 
       <ExpandableListView
         data={convertToExpandable(props.data)} // required
@@ -102,6 +122,13 @@ const styles = StyleSheet.create({
   },
   deleteBox: {
     backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 100,
+    height: 40,
+  },
+  readBox: {
+    backgroundColor: 'green',
     justifyContent: 'center',
     alignItems: 'center',
     width: 100,
